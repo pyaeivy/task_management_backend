@@ -17,7 +17,7 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String title;
+    private String boardTitle;
     @Enumerated(EnumType.STRING)
     private Type type;
 
