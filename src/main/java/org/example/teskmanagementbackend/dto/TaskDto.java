@@ -1,6 +1,7 @@
 package org.example.teskmanagementbackend.dto;
 
 import lombok.ToString;
+
 import org.example.teskmanagementbackend.entity.Period;
 
 import java.time.LocalDate;
@@ -9,12 +10,10 @@ import java.time.LocalDate;
 public class TaskDto {
 
     public record TaskRequest(
+            Long boardId,
             String taskName,
-            Period period,
-            LocalDate startDate,
-            LocalDate endDate,
-            boolean isCompleted
-    ){}
+            Period period
+    ) {}
 
     public record TaskResponse(
             Long id,
@@ -22,6 +21,9 @@ public class TaskDto {
             Period period,
             LocalDate startDate,
             LocalDate endDate,
-            boolean isCompleted
-    ){}
+            boolean isCompleted,
+            String ownerUsername,
+            Long boardId
+    ) {}
 }
+

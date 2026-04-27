@@ -12,6 +12,7 @@ import org.example.teskmanagementbackend.entity.Task;
 import org.example.teskmanagementbackend.entity.User;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,14 @@ public class BoardService {
 		return boardDao.listBoardByUsername(username).stream().map(this::mapToBoardResponse).toList();
 	}
 
+	public BoardResponse getBoardById(@NonNull Long id) {
+		Board board = boardDao.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+		return mapToBoardResponse(board);
+	}
+
 	public List<BoardResponse> searchBoards(String ownerName, String title, String taskName, String type) {
+		@SuppressWarnings("null")
 		Specification<Board> spec = (root, query, cb) -> {
 			query.distinct(true);
 			List<Predicate> predicates = new ArrayList<>();
@@ -79,8 +87,11 @@ public class BoardService {
 		String ownerUsername = board.getUser() != null ? board.getUser().getUsername() : null;
 
 		List<TaskResponse> taskList = board.getLists() != null
-				? board.getLists().stream().map(t -> new TaskResponse(t.getId(), t.getTaskName(), t.getPeriod(),
-						t.getStartDate(), t.getEndDate(), t.isCompleted())).toList()
+				? board.getLists().stream().map(t -> new TaskResponse(
+						t.getId(), t.getTaskName(), t.getPeriod(),
+						t.getStartDate(), t.getEndDate(), t.isCompleted(),
+						t.getUser() != null ? t.getUser().getUsername() : null,
+						board.getId())).toList()
 				: Collections.emptyList();
 
 		return new BoardResponse(board.getId(), board.getBoardTitle(),
@@ -108,7 +119,6 @@ public class BoardService {
 				() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authenticated user not found"));
 		board.setUser(owner);
 
-		@SuppressWarnings("null")
 		Board savedBoard = boardDao.save(board);
 
 		return mapToBoardResponse(savedBoard);

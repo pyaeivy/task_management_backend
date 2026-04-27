@@ -5,6 +5,7 @@ import org.example.teskmanagementbackend.dto.BoardDto.BoardResponse;
 import org.example.teskmanagementbackend.service.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,11 @@ public class BoardController {
     @GetMapping("/all")
     public ResponseEntity<List<BoardResponse>> listBoards() {
         return ResponseEntity.ok(boardService.listBoard());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardResponse> getBoardById(@PathVariable @NonNull Long id) {
+        return ResponseEntity.ok(boardService.getBoardById(id));
     }
 
     @GetMapping("/search")

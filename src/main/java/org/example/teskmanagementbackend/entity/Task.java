@@ -16,6 +16,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String taskName;
+    @Enumerated(EnumType.STRING)
     private Period period;
     private LocalDate startDate;
     private LocalDate endDate;
