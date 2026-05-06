@@ -27,9 +27,9 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/fetch-user/{username}")
-    public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
-        UserDto userDto = authService.getUserByUsername(username);
+    @GetMapping("/fetch-user")
+    public ResponseEntity<UserDto> getUserByUsername() {
+        UserDto userDto = authService.getUserByUsername();
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 

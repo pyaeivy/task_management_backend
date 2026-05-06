@@ -11,6 +11,7 @@ import org.example.teskmanagementbackend.security.JwtUtil;
 import org.example.teskmanagementbackend.util.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,7 +40,8 @@ public class AuthService {
                 .toList();
     }
 
-    public UserDto getUserByUsername(String username) {
+    public UserDto getUserByUsername() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userDao.findByUsername(username)
                 .stream()
                 .map(Utils::userToDto)

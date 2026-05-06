@@ -91,8 +91,8 @@ public class BoardService {
 						t.getId(), t.getTaskName(), t.getPeriod(),
 						t.getStartDate(), t.getEndDate(), t.isCompleted(),
 						t.getUser() != null ? t.getUser().getUsername() : null,
-						board.getId())).toList()
-				: Collections.emptyList();
+						board.getId(), t.getDescription(), t.getComments())).toList()
+				: Collections.emptyList(); 
 
 		return new BoardResponse(board.getId(), board.getBoardTitle(),
 				board.getType() != null ? board.getType().name() : null, ownerUsername, taskList);

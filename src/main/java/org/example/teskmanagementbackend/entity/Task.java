@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,12 +20,17 @@ public class Task {
     private String taskName;
     @Enumerated(EnumType.STRING)
     private Period period;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private boolean isCompleted;
+    private String description;
+    private String comments;
+    
 
     @ManyToOne
     private User user;
     @ManyToOne
     private Board board;
+    @OneToMany
+    private List<CheckList> checkList = new ArrayList<>();
 }

@@ -1,10 +1,15 @@
 package org.example.teskmanagementbackend.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.example.teskmanagementbackend.dto.RegisterDto;
+import org.example.teskmanagementbackend.dto.UserDto;
 import org.example.teskmanagementbackend.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,5 +31,16 @@ public class AuthController {
     public ResponseEntity<AuthService.LoginResponse> login(@RequestBody AuthService.LoginRequest request){
         AuthService.LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<UserDto> getUserByUsername(){
+    	return ResponseEntity.ok(authService.getUserByUsername());
+    }
+    
+    @GetMapping("/all-user")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<List<UserDto>> getAllUser(){
+    	return ResponseEntity.ok(authService.getAllUser());
     }
 }

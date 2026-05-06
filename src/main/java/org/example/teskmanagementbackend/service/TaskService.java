@@ -1,6 +1,6 @@
 package org.example.teskmanagementbackend.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +31,16 @@ public class TaskService {
 	private final TaskDao taskDao;
 	private final BoardDao boardDao;
 	private final UserDao userDao;
-	
-	public List<TaskResponse> listTask(){
+
+	record RequestDescription(String description) {
+	};
+
+	record RequestComments(String comments) {
+	};
+
+	public List<TaskResponse> listTask() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if(auth != null && !auth.isAuthenticated()) {
+		if (auth != null && !auth.isAuthenticated()) {
 			throw new RuntimeException("User is not authenticated!!!");
 		}
 		String username = auth.getName();
@@ -54,7 +60,7 @@ public class TaskService {
 		Task task = new Task();
 		task.setTaskName(request.taskName());
 		task.setPeriod(request.period());
-		task.setStartDate(LocalDate.now());
+		task.setStartDate(LocalDateTime.now());
 		task.setEndDate(endDate());
 		task.setCompleted(false);
 		task.setUser(owner);
@@ -68,7 +74,7 @@ public class TaskService {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
 		task.setCompleted(true);
-		task.setEndDate(LocalDate.now()); // mark the completion date
+		task.setEndDate(LocalDateTime.now()); // mark the completion date
 
 		return mapToResponse(taskDao.save(task));
 	}
@@ -109,10 +115,29 @@ public class TaskService {
 		Long boardId = task.getBoard() != null ? task.getBoard().getId() : null;
 
 		return new TaskResponse(task.getId(), task.getTaskName(), task.getPeriod(), task.getStartDate(),
-				task.getEndDate(), task.isCompleted(), ownerUsername, boardId);
+				task.getEndDate(), task.isCompleted(), ownerUsername, boardId, task.getDescription(),
+				task.getComments());
 	}
-	
-	public LocalDate endDate () {
-		return LocalDate.of(1900, 1, 1);
+
+	public String addDescription(RequestDescription request, Long taskId) {
+		@SuppressWarnings("null")
+		Task task = taskDao.findById(taskId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+
+		task.setDescription(request.description());
+		return "Created Successfully!";
+	}
+
+	public String addComments(RequestComments request, Long taskId) {
+		@SuppressWarnings("null")
+		Task task = taskDao.findById(taskId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+
+		task.setDescription(request.comments());
+		return "Comments Added Successfully!";
+	}
+
+	public LocalDateTime endDate() {
+		return LocalDateTime.of(1900, 1, 1, 0, 0);
 	}
 }
